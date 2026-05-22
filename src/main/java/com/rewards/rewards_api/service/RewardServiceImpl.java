@@ -10,6 +10,7 @@ import com.rewards.rewards_api.repository.TransactionRepository;
 import com.rewards.rewards_api.util.RewardCalculator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,6 +32,9 @@ public class RewardServiceImpl implements RewardService {
     private final CustomerRepository customerRepository;
 
     private final TransactionRepository transactionRepository;
+
+    @Value("${rewards.months}")
+    private int months;
 
     @Override
     public List<RewardResponse> getCustomerRewards() {
@@ -83,7 +87,7 @@ public class RewardServiceImpl implements RewardService {
     private RewardResponse buildRewardResponse(Customer customer) {
 
         LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusMonths(3);
+        LocalDate startDate = endDate.minusMonths(months);
 
         List<Transaction> transactions =
                 transactionRepository.findByCustomerIdAndTransactionDateBetween(
